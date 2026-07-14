@@ -65,7 +65,7 @@ It represents the point where I stopped consuming tutorials and started creating
 
 - Python 3
 
-👤 By
+## 👤 By
 
 **Sweksha Gupta**
 
