@@ -1,202 +1,98 @@
-# Unit Converter Project
-
-# =====================================================
-# 0. HEADING FUNCTION (used by every converter)
-# =====================================================
-def display_heading(title):
-    print("=========================================")
-    print(title)
-    print("=========================================")
-
-
-# =====================================================
-# 1. LENGTH CONVERTER
-# =====================================================
-def length_converter():
-    display_heading("LENGTH CONVERTER")
-
-    meters = float(input("Enter meters: "))
-
-    kilometers = meters / 1000
-    centimeters = meters * 100
-    millimeters = meters * 1000
-    feet = meters * 3.28084
-    inches = meters * 39.3701
-    miles = meters * 0.000621371
-
-    print("----------------------------")
-    print(meters, "meters")
-    print(round(kilometers, 5), "kilometers")
-    print(round(centimeters, 2), "centimeters")
-    print(round(millimeters, 2), "millimeters")
-    print(round(feet, 2), "feet")
-    print(round(inches, 2), "inches")
-    print(round(miles, 5), "miles")
-    print("----------------------------")
+def convert_length(value, from_unit, to_unit):
+    factors = {
+        "m": 1.0,
+        "km": 1000.0,
+        "cm": 0.01,
+        "mm": 0.001,
+        "mi": 1609.344,
+        "ft": 0.3048,
+        "in": 0.0254,
+        "yd": 0.9144,
+    }
+    if from_unit not in factors or to_unit not in factors:
+        raise ValueError("Unsupported length unit")
+    return value * factors[from_unit] / factors[to_unit]
 
 
-# =====================================================
-# 2. WEIGHT CONVERTER
-# =====================================================
-def weight_converter():
-    display_heading("WEIGHT CONVERTER")
-
-    kilograms = float(input("Enter kilograms: "))
-
-    grams = kilograms * 1000
-    milligrams = kilograms * 1_000_000
-    pounds = kilograms * 2.20462
-
-    print("----------------------------")
-    print("Kilograms  :", kilograms)
-    print("Grams      :", round(grams, 2))
-    print("Milligrams :", round(milligrams, 2))
-    print("Pounds     :", round(pounds, 2))
-    print("----------------------------")
+def convert_weight(value, from_unit, to_unit):
+    factors = {
+        "kg": 1.0,
+        "g": 0.001,
+        "mg": 0.000001,
+        "lb": 0.45359237,
+        "oz": 0.028349523125,
+    }
+    if from_unit not in factors or to_unit not in factors:
+        raise ValueError("Unsupported weight unit")
+    return value * factors[from_unit] / factors[to_unit]
 
 
-# =====================================================
-# 3. TEMPERATURE CONVERTER
-# =====================================================
-def temperature_converter():
-    display_heading("TEMPERATURE CONVERTER")
+def convert_temperature(value, from_unit, to_unit):
+    if from_unit == to_unit:
+        return value
 
-    celsius = float(input("Enter Celsius: "))
+    if from_unit == "C":
+        celsius = value
+    elif from_unit == "F":
+        celsius = (value - 32) * 5 / 9
+    elif from_unit == "K":
+        celsius = value - 273.15
+    else:
+        raise ValueError("Unsupported temperature unit")
 
-    fahrenheit = celsius * 9 / 5 + 32
-    kelvin = celsius + 273.15
-
-    print("----------------------------")
-    print("Celsius    :", celsius)
-    print("Fahrenheit :", round(fahrenheit, 2))
-    print("Kelvin     :", round(kelvin, 2))
-    print("----------------------------")
-
-
-# =====================================================
-# 4. TIME CONVERTER
-# =====================================================
-def time_converter():
-    display_heading("TIME CONVERTER")
-
-    hours = float(input("Enter Hours: "))
-
-    minutes = hours * 60
-    seconds = hours * 3600
-
-    print("----------------------------")
-    print("Hours   :", hours)
-    print("Minutes :", round(minutes, 2))
-    print("Seconds :", round(seconds, 2))
-    print("----------------------------")
+    if to_unit == "C":
+        return celsius
+    if to_unit == "F":
+        return celsius * 9 / 5 + 32
+    if to_unit == "K":
+        return celsius + 273.15
+    raise ValueError("Unsupported temperature unit")
 
 
-# =====================================================
-# BONUS 1: SPEED CONVERTER
-# =====================================================
-def speed_converter():
-    display_heading("SPEED CONVERTER")
+def main():
+    print("Unit Converter")
+    print("Categories: 1) Length  2) Weight  3) Temperature")
 
-    kmh = float(input("Enter speed in km/h: "))
+    while True:
+        choice = input("Choose a category (1/2/3) or q to quit: ").strip().lower()
+        if choice == "q":
+            print("Goodbye!")
+            break
 
-    ms = kmh / 3.6
-    mph = kmh * 0.621371
+        if choice == "1":
+            category = "length"
+            units = ["m", "km", "cm", "mm", "mi", "ft", "in", "yd"]
+        elif choice == "2":
+            category = "weight"
+            units = ["kg", "g", "mg", "lb", "oz"]
+        elif choice == "3":
+            category = "temperature"
+            units = ["C", "F", "K"]
+        else:
+            print("Invalid choice")
+            continue
 
-    print("----------------------------")
-    print("Km/h            :", kmh)
-    print("Meters/second   :", round(ms, 2))
-    print("Miles/hour      :", round(mph, 2))
-    print("----------------------------")
+        try:
+            value = float(input("Enter the value: "))
+            from_unit = input(f"Enter the source unit ({'/'.join(units)}): ").strip()
+            to_unit = input(f"Enter the target unit ({'/'.join(units)}): ").strip()
 
+            if category == "length":
+                result = convert_length(value, from_unit, to_unit)
+            elif category == "weight":
+                result = convert_weight(value, from_unit, to_unit)
+            else:
+                result = convert_temperature(value, from_unit, to_unit)
 
-# =====================================================
-# BONUS 2: AREA CONVERTER
-# =====================================================
-def area_converter():
-    display_heading("AREA CONVERTER")
+            print(f"Result: {result}")
+        except ValueError as e:
+            print(f"Error: {e}")
 
-    sq_meters = float(input("Enter area in square meters: "))
-
-    sq_km = sq_meters / 1_000_000
-    sq_feet = sq_meters * 10.7639
-
-    print("----------------------------")
-    print("Square meters    :", sq_meters)
-    print("Square kilometers:", round(sq_km, 8))
-    print("Square feet      :", round(sq_feet, 2))
-    print("----------------------------")
-
-
-# =====================================================
-# BONUS 3: VOLUME CONVERTER
-# =====================================================
-def volume_converter():
-    display_heading("VOLUME CONVERTER")
-
-    litres = float(input("Enter volume in litres: "))
-
-    millilitres = litres * 1000
-    cubic_meters = litres / 1000
-
-    print("----------------------------")
-    print("Litres       :", litres)
-    print("Millilitres  :", round(millilitres, 2))
-    print("Cubic meters :", round(cubic_meters, 5))
-    print("----------------------------")
+        again = input("Convert again? (y/n): ").strip().lower()
+        if again != "y":
+            print("Goodbye!")
+            break
 
 
-# =====================================================
-# BONUS 4: DATA STORAGE CONVERTER
-# =====================================================
-def data_storage_converter():
-    display_heading("DATA STORAGE CONVERTER")
-
-    gb = float(input("Enter size in GB: "))
-
-    mb = gb * 1024
-    kb = mb * 1024
-    bytes_ = kb * 1024
-    tb = gb / 1024
-
-    print("----------------------------")
-    print("GB    :", gb)
-    print("MB    :", round(mb, 2))
-    print("KB    :", round(kb, 2))
-    print("Bytes :", round(bytes_, 2))
-    print("TB    :", round(tb, 6))
-    print("----------------------------")
-
-
-# =====================================================
-# MAIN MENU (just a printed banner for now --
-# real menus with "if" come in a later lesson!)
-# =====================================================
-display_heading("UNIVERSAL UNIT CONVERTER")
-
-print("1. Length Converter")
-print("2. Weight Converter")
-print("3. Temperature Converter")
-print("4. Time Converter")
-print("5. Speed Converter (bonus)")
-print("6. Area Converter (bonus)")
-print("7. Volume Converter (bonus)")
-print("8. Data Storage Converter (bonus)")
-print("=========================================")
-
-# -----------------------------------------------------
-# Since you don't know "if" statements yet, uncomment
-# ONE function call below at a time to test it.
-# (Remove the "#" from the start of the line to run it.)
-# -----------------------------------------------------
-
-length_converter()
-weight_converter()
-temperature_converter()
-time_converter()
-speed_converter()
-area_converter()
-volume_converter()
-data_storage_converter()
-
-print("Thank You!")
-print("=========================================")
+if __name__ == "__main__":
+    main()
